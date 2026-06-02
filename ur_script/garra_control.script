@@ -1,0 +1,35 @@
+# =====================================================================
+# Controle de garra robotica a partir do UR7e (PolyScope X)
+# Envia o angulo do servo para a Raspberry Pi via socket TCP.
+#
+# A Raspberry Pi deve estar rodando o servidor TCP (tcp_server)
+# e o no do servo (servo_node) na porta 5000.
+#
+# Funcoes usadas (Script Directory PolyScope X):
+#   socket_open(address, port, socket_name)  -> abre conexao
+#   socket_send_line(str, socket_name)       -> envia str + "\n"
+#   socket_close(socket_name)                -> fecha conexao
+#
+# Dr. da Robotica - #DaEscolaAIndustria
+# =====================================================================
+
+def controla_garra(angulo):
+  local connected = socket_open("192.168.2.20", 5000, "socket_garra")
+  if connected:
+    socket_send_line(to_str(angulo), "socket_garra")
+    sleep(0.5)
+    socket_close("socket_garra")
+  else:
+    popup("Erro: nao foi possivel conectar na Raspberry Pi", "Erro Garra", error=True, blocking=False)
+  end
+end
+
+# --- Exemplo de uso ---
+
+# Abre a garra (90 graus)
+controla_garra(90)
+sleep(1.0)
+
+# Fecha a garra (0 graus)
+controla_garra(0)
+sleep(1.0)
